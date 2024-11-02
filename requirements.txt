@@ -9,5 +9,4 @@ pandas
 imgurpython
 google-auth
 pygsheets
-json
 requests
