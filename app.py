@@ -18,7 +18,7 @@ import json
 from datetime import datetime
 import sys
 import pygsheets
-
+import os
 #import database, googleSheet
 '''
 # Channel Access Token
@@ -217,6 +217,7 @@ def handle_image(event):
         message_content = line_bot_api.get_message_content(event.message.id)
 
         ### ma
+        '''
         ext = 'jpg'
         with tempfile.NamedTemporaryFile(dir=static_tmp_path,
                                          prefix=ext + '-',
@@ -247,7 +248,7 @@ def handle_image(event):
             line_bot_api.reply_message(event.reply_token,
                                        TextSendMessage(text='上傳失敗'))
         return 0
-
+        '''
         #line_bot_api.reply_message(event.reply_token, TextMessage(text=replymes))
 
     except LineBotApiError as e:
@@ -318,7 +319,6 @@ def handle_file(event):
         return
 
 
-import os
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
