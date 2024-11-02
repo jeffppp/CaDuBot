@@ -23,10 +23,10 @@ handler = WebhookHandler('b5f09601f13baf753a08b025c318f5c2')
 #ma_bot
 # Channel Access Token
 line_bot_api = LineBotApi(
-    'aJC2bjm4oW1IrcqXt2B83wWMJYt10ykHdrIe3xQCPdZHZog4QvCxWotOqcyk2gUz1EmXVylUWpIasRGg8yXjGXFIZDTmZK9VqDiQMFMfZgZy9JlM9PMMBoTwmsQGnhga94T7aEOfHcbSxCrYaiygNwdB04t89/1O/w1cDnyilFU='
+    'OZaJksx8g/eZfwsV4abLZsoAjo51lCG5z61rx5RTG8xxxRZEuqn5675GIy7FoAaA6UfZtB/0gEDEbIGmK/7twYslMvdlnuNCcta3LbCGkRAvUWojkSKGOM1JdUOW1HlfTiQOPWSMCpRadcfMCcA7cwdB04t89/1O/w1cDnyilFU='
 )
 # Channel Secret
-handler = WebhookHandler('b601eca685bf17acd4cea1d40415822e')
+handler = WebhookHandler('86a1d36097bf45217576866b2ebc14f3')
 
 # imgur key
 client_id = 'fa56d6b6417a3a4'
