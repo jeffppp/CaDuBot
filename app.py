@@ -51,7 +51,7 @@ print(creds_json)
 with open('creds.json', 'w') as json_file:
     json.dump(creds_json, json_file, indent=4)  # indent 用於美化格式
 # 使用 from_client_config 進行授權
-gc = pygsheets.authorize(service_account_file=creds.json)
+gc = pygsheets.authorize(service_account_file="creds.json")
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
 
