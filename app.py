@@ -46,7 +46,13 @@ static_tmp_path = '.'
 # google sheet
 
 #url = 'https://notify-api.line.me/api/notify'
-gc = pygsheets.authorize(client_secret=json.loads(os.getenv("GOOGLE_SHEETS_CREDS")))
+creds_json = json.loads(os.getenv("GOOGLE_SHEETS_CREDS"))
+
+# 創建一個臨時文件並寫入憑證內容
+with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_creds_file:
+    temp_creds_file.write(json.dumps(creds_json).encode())
+    temp_creds_file_path = temp_creds_file.name
+gc = pygsheets.authorize(client_secret=temp_creds_file_path)
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
 
