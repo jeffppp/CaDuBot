@@ -13,6 +13,12 @@ import random, traceback
 import game, lottery
 
 import talk, script, eat
+
+import json
+from datetime import datetime
+import sys
+import pygsheets
+
 #import database, googleSheet
 '''
 # Channel Access Token
@@ -29,14 +35,20 @@ line_bot_api = LineBotApi(
 handler = WebhookHandler('86a1d36097bf45217576866b2ebc14f3')
 
 # imgur key
+'''
 client_id = 'fa56d6b6417a3a4'
 client_secret = '40a9335c64c2e50749927978663103e3a9cbd0f9'
 album_id = 'DkD9rDb'
 access_token = '5dc739693a8e98feccaebbb68084003c2e0cc280'
 refresh_token = '663b65e5cc94cc3126b488cec5cde02510b97ae5'
-
+'''
 static_tmp_path = '.'
+# google sheet
 
+#url = 'https://notify-api.line.me/api/notify'
+gc = pygsheets.authorize(client_secret=json.loads(os.getenv("GOOGLE_SHEETS_CREDS")))
+survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
+sh = gc.open_by_url(survey_url)
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -125,6 +137,8 @@ def handle_message(event):
         if len(replyMessageList) == 0:
             #print(replyMessageList)
             replyMessageList += game.getResponse(event, line_bot_api)
+            ws = sh.worksheet_by_title('測試')
+            ws.cell((1,1)).set_value('Test')
             #print(replyMessageList)
         if len(replyMessageList) == 0:
             replyMessageList += lottery.getResponse(event)
