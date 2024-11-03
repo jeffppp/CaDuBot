@@ -10,7 +10,7 @@ from imgurpython import ImgurClient
 
 import schedule, time
 import random, traceback
-import game, lottery
+import game, lottery, send_push_message
 
 import talk, script, eat
 
@@ -58,11 +58,8 @@ with open('creds.json', 'w') as json_file:
 gc = pygsheets.authorize(service_account_file="creds.json")
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
-schedule.every().day.at("15:15").do(send_push_message)
-print('done')
 
 
-# 設置排程任務：每天早上 9:00 推播訊息
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -107,58 +104,18 @@ def handle_postback(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     try:
-        #讀取資料庫狀態
-        #dbStatusFile = open('dbStatus', 'r')
-
-        #dbStatusTxt = dbStatusFile.readlines()[-1]
-        #dbStatusFile.close()
-        #import re
-        #split = re.split('/', dbStatusTxt)
-        #dbStatus = {'new': split[0] == 'True', 'updating': split[1] == 'True'}
-
-        #如果是初始狀態
-        '''
-        if dbStatus['new']:
-            #修改資料庫狀態True/True
-            dbStatusFile = open('dbStatus', 'a')
-            dbStatusFile.write('\nTrue/True')
-            dbStatusFile.close()
-            #回覆訊息'忙線'
-            line_bot_api.reply_message(event.reply_token,
-                                       TextMessage(text="dbStatusFile"))
-            #如果是非更新中
-            if not dbStatus['updating']:
-                #更新資料庫
-                database.updateTablesAll()
-                #修改資料庫狀態False/False
-                dbStatusFile = open('dbStatus', 'a')
-                dbStatusFile.write('\nFalse/False')
-                dbStatusFile.close()
-                #直接結束
-                return
-            #如果是更新中
-            else:
-                #直接結束
-                return
-        '''
         
         replyMessageList = []
         
         #if len(replyMessageList) == 0:
         #    replyMessageList += eat.getResponse(event)
-        #if len(replyMessageList) == 0:
-        #    replyMessageList += script.getResponse(event)
         if len(replyMessageList) == 0:
-            #print(replyMessageList)
+            send_push_message.getResponse(event,line_bot_api,sh)
+        if len(replyMessageList) == 0:
             replyMessageList += game.getResponse(event, line_bot_api, sh)
-            
-            #print(replyMessageList)
         if len(replyMessageList) == 0:
             replyMessageList += lottery.getResponse(event)
-        #if len(replyMessageList) == 0:
-        #    replyMessageList += talk.getResponse(event)
         if len(replyMessageList) != 0:
-            #print(replyMessageList)
             line_bot_api.reply_message(event.reply_token, replyMessageList)
 
     except LineBotApiError as e:
@@ -336,6 +293,17 @@ def handle_file(event):
         return
 
 
+# 定義一個函數來在背景執行 schedule.run_pending
+def run_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # 每分鐘檢查一次任務
+        print('60000000000000000')
 if __name__ == "__main__":
+    # 創建並啟動一個線程來運行 run_schedule
+    schedule_thread = threading.Thread(target=run_schedule)
+    schedule_thread.daemon = True  # 設置為守護線程，這樣當主程式結束時該線程會自動終止
+    schedule_thread.start()
+    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
