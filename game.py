@@ -6,7 +6,7 @@ from linebot.models import *
 import re
 
 
-def getResponse(content, line_bot_api):
+def getResponse(content, line_bot_api, sh):
 
     try:
         check_game = ['剪刀', '石頭', '布']
@@ -25,6 +25,10 @@ def getResponse(content, line_bot_api):
             profile = line_bot_api.get_group_member_profile(
                 content.source.group_id, content.source.user_id)
 
+        ws = sh.worksheet_by_title('測試')
+        ws.cell((1,1)).set_value(room_id)
+        ws.cell((1,2)).set_value(profile)
+        
         if type(content) == str:
             mes = content
         else:
@@ -32,9 +36,9 @@ def getResponse(content, line_bot_api):
         print(mes)
         learntxt = re.split('[,，]', mes)
 
-        if learntxt[0] == '恐龍學說話':
-            database.addDialog([[learntxt[1], 1, learntxt[2]]])
-            return [TextMessage(text="我學會囉")]
+        #if learntxt[0] == '恐龍學說話':
+        #    database.addDialog([[learntxt[1], 1, learntxt[2]]])
+        #    return [TextMessage(text="我學會囉")]
 
         if learntxt[0] == '我要開票':
             if os.path.isfile(room_id + 'vote.txt'):

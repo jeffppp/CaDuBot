@@ -55,6 +55,14 @@ gc = pygsheets.authorize(service_account_file="creds.json")
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
 
+def send_push_message():
+    # 檢查當前時間，判斷是否發送推播
+    now = datetime.now()
+    if now.hour == 9 and now.minute == 0:  # 例如：每天早上 9:00 推播
+        message = TextSendMessage(text="早安！這是一則自動推播訊息")
+        line_bot_api.push_message(USER_ID, message)
+
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -76,8 +84,8 @@ def callback():
 def handle_postback(event):
     try:
         replyMessageList = []
-        if len(replyMessageList) == 0:
-            replyMessageList += script.getResponsePostback(event)
+        #if len(replyMessageList) == 0:
+        #    replyMessageList += script.getResponsePostback(event)
         if len(replyMessageList) == 0:
             replyMessageList += game.getResponsePostback(event, line_bot_api)
         if len(replyMessageList) != 0:
@@ -99,13 +107,13 @@ def handle_postback(event):
 def handle_message(event):
     try:
         #讀取資料庫狀態
-        dbStatusFile = open('dbStatus', 'r')
+        #dbStatusFile = open('dbStatus', 'r')
 
-        dbStatusTxt = dbStatusFile.readlines()[-1]
-        dbStatusFile.close()
-        import re
-        split = re.split('/', dbStatusTxt)
-        dbStatus = {'new': split[0] == 'True', 'updating': split[1] == 'True'}
+        #dbStatusTxt = dbStatusFile.readlines()[-1]
+        #dbStatusFile.close()
+        #import re
+        #split = re.split('/', dbStatusTxt)
+        #dbStatus = {'new': split[0] == 'True', 'updating': split[1] == 'True'}
 
         #如果是初始狀態
         '''
@@ -141,9 +149,8 @@ def handle_message(event):
         #    replyMessageList += script.getResponse(event)
         if len(replyMessageList) == 0:
             #print(replyMessageList)
-            replyMessageList += game.getResponse(event, line_bot_api)
-            ws = sh.worksheet_by_title('測試')
-            ws.cell((1,1)).set_value('Test')
+            replyMessageList += game.getResponse(event, line_bot_api, sh)
+            
             #print(replyMessageList)
         if len(replyMessageList) == 0:
             replyMessageList += lottery.getResponse(event)
