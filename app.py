@@ -85,9 +85,7 @@ def callback():
 def handle_postback(event):
     try:
         replyMessageList = []
-        USER_ID = ws.cell((1,1)).value
-        message = TextSendMessage(text="早安！這是一則自動推播訊息")
-        line_bot_api.push_message(USER_ID, message)
+        
         #if len(replyMessageList) == 0:
         #    replyMessageList += script.getResponsePostback(event)
         if len(replyMessageList) == 0:
@@ -144,7 +142,9 @@ def handle_message(event):
                 #直接結束
                 return
         '''
-
+        USER_ID = ws.cell((1,1)).value
+        message = TextSendMessage(text="早安！這是一則自動推播訊息")
+        line_bot_api.push_message(USER_ID, message)
         replyMessageList = []
         
         #if len(replyMessageList) == 0:
