@@ -26,8 +26,14 @@ def getResponse(content, line_bot_api, sh):
                 content.source.group_id, content.source.user_id)
 
         ws = sh.worksheet_by_title('測試')
-        ws.cell((1,1)).set_value(room_id)
-        ws.cell((1,2)).set_value(profile.display_name)
+        ws.cell((1,10)).set_value('=MATCH("'+room_id+'",A:A,0)')
+        ws.refresh()
+        if(ws.cell((1,5)).value=='#N/A'):
+            ws.add_rows(1)
+            L=len(ws.get_col(1,include_tailing_empty=False))
+            ws.cell((L+1,1)).set_value(room_id)
+            ws.cell((L+1,2)).set_value(profile.display_name)
+
         
         if type(content) == str:
             mes = content
