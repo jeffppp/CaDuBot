@@ -45,8 +45,8 @@ def getResponse(content, line_bot_api, sh):
             column_c_values = ws.get_col(3)  # C 欄為 3，傳回值為列表
             # 輸出結果
             for value,strdata in zip(column_a_values, column_c_values):
-                print(value[0])
-                print(strdata[0])
+                print(value)
+                print(strdata)
                 message = TextSendMessage(text=strdata[0])
                 line_bot_api.push_message(value[0], message)        
         return []
