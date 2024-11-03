@@ -143,7 +143,7 @@ def handle_message(event):
                 #直接結束
                 return
         '''
-        
+        ws = sh.worksheet_by_title('測試')
         USER_ID = ws.cell((1,1)).value
         message = TextSendMessage(text="早安！這是一則自動推播訊息")
         line_bot_api.push_message(USER_ID, message)
