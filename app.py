@@ -62,24 +62,6 @@ schedule.every().day.at("15:15").do(send_push_message)
 print('done')
 
 
-def send_push_message():
-    try:
-        ws = sh.worksheet_by_title('測試')
-        USER_ID = ws.cell((3,1)).value
-        message = TextSendMessage(text="早安！這是一則自動推播訊息")
-        line_bot_api.push_message(USER_ID, message)
-    except LineBotApiError as e:
-        error = '''LineBotApiError\n''' + e.__str__()
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((5,5)).set_value(error)
-        #googleSheet.uploadException(error)
-        return
-    except:
-        error = '''UnknownError\n''' + traceback.format_exc()
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((6,6)).set_value(error)
-        #googleSheet.uploadException(error)
-        return
 # 設置排程任務：每天早上 9:00 推播訊息
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -354,17 +336,6 @@ def handle_file(event):
         return
 
 
-# 定義一個函數來在背景執行 schedule.run_pending
-def run_schedule():
-    while True:
-        schedule.run_pending()
-        time.sleep(60)  # 每分鐘檢查一次任務
-        print('60000000000000000')
 if __name__ == "__main__":
-    # 創建並啟動一個線程來運行 run_schedule
-    schedule_thread = threading.Thread(target=run_schedule)
-    schedule_thread.daemon = True  # 設置為守護線程，這樣當主程式結束時該線程會自動終止
-    schedule_thread.start()
-    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
