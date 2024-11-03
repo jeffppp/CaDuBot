@@ -54,6 +54,7 @@ with open('creds.json', 'w') as json_file:
 gc = pygsheets.authorize(service_account_file="creds.json")
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
+ws = sh.worksheet_by_title('測試')
 '''
 def send_push_message():
     # 檢查當前時間，判斷是否發送推播
@@ -84,6 +85,9 @@ def callback():
 def handle_postback(event):
     try:
         replyMessageList = []
+        USER_ID = ws.cell((1,1)).value
+        message = TextSendMessage(text="早安！這是一則自動推播訊息")
+        line_bot_api.push_message(USER_ID, message)
         #if len(replyMessageList) == 0:
         #    replyMessageList += script.getResponsePostback(event)
         if len(replyMessageList) == 0:
@@ -142,7 +146,7 @@ def handle_message(event):
         '''
 
         replyMessageList = []
-
+        
         #if len(replyMessageList) == 0:
         #    replyMessageList += eat.getResponse(event)
         #if len(replyMessageList) == 0:
