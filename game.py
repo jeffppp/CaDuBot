@@ -27,7 +27,7 @@ def getResponse(content, line_bot_api, sh):
 
         ws = sh.worksheet_by_title('測試')
         ws.cell((1,1)).set_value(room_id)
-        ws.cell((1,2)).set_value(content.source.user_id)
+        ws.cell((1,2)).set_value(profile.display_name)
         
         if type(content) == str:
             mes = content
