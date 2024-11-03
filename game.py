@@ -27,13 +27,12 @@ def getResponse(content, line_bot_api, sh):
 
         ws = sh.worksheet_by_title('測試')
         ws.cell((1,1)).set_value(room_id)
-        ws.cell((1,2)).set_value(profile)
+        ws.cell((1,2)).set_value(content.source.user_id)
         
         if type(content) == str:
             mes = content
         else:
             mes = content.message.text
-        print(mes)
         learntxt = re.split('[,，]', mes)
 
         #if learntxt[0] == '恐龍學說話':
@@ -365,10 +364,14 @@ def getResponse(content, line_bot_api, sh):
         return []
     except LineBotApiError as e:
         error = '''LineBotApiError\n''' + e.__str__()
+        ws = sh.worksheet_by_title('測試')
+        ws.cell((5,5)).set_value(error)
         #googleSheet.uploadException(error)
         return []
     except:
         error = '''UnknownError\n''' + traceback.format_exc()
+        ws = sh.worksheet_by_title('測試')
+        ws.cell((6,6)).set_value(error)
         #googleSheet.uploadException(error)
         return []
 
