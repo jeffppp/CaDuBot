@@ -4,7 +4,7 @@ from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import *
 #import database, googleSheet
 import re
-
+import pygsheets
 
 def getResponse(content, line_bot_api, sh):
 

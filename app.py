@@ -54,14 +54,14 @@ with open('creds.json', 'w') as json_file:
 gc = pygsheets.authorize(service_account_file="creds.json")
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
-
+'''
 def send_push_message():
     # 檢查當前時間，判斷是否發送推播
     now = datetime.now()
     if now.hour == 9 and now.minute == 0:  # 例如：每天早上 9:00 推播
         message = TextSendMessage(text="早安！這是一則自動推播訊息")
         line_bot_api.push_message(USER_ID, message)
-
+'''
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -164,12 +164,16 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token,
                                    TextMessage(text="error1"))
         error = '''LineBotApiError\n''' + e.__str__()
+        ws = sh.worksheet_by_title('測試')
+        ws.cell((5,5)).set_value(error)
         #googleSheet.uploadException(error)
         return
     except:
         line_bot_api.reply_message(event.reply_token,
                                    TextMessage(text="error2"))
         error = '''UnknownError\n''' + traceback.format_exc()
+        ws = sh.worksheet_by_title('測試')
+        ws.cell((6,6)).set_value(error)
         #googleSheet.uploadException(error)
         return
 
