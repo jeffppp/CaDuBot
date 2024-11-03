@@ -8,8 +8,7 @@ from linebot.models import *
 import re, tempfile
 from imgurpython import ImgurClient
 
-app = Flask(__name__)
-
+import schedule, time
 import random, traceback
 import game, lottery
 
@@ -20,6 +19,10 @@ from datetime import datetime
 import sys
 import pygsheets
 import os
+
+
+app = Flask(__name__)
+
 #import database, googleSheet
 '''
 # Channel Access Token
@@ -56,14 +59,15 @@ gc = pygsheets.authorize(service_account_file="creds.json")
 survey_url = 'https://docs.google.com/spreadsheets/d/1LffAHLYbv6bOgovVwmUZcBO2WzAy0WmxbNQx8wFHbhk/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
 
-'''
+
 def send_push_message():
-    # 檢查當前時間，判斷是否發送推播
-    now = datetime.now()
-    if now.hour == 9 and now.minute == 0:  # 例如：每天早上 9:00 推播
-        message = TextSendMessage(text="早安！這是一則自動推播訊息")
-        line_bot_api.push_message(USER_ID, message)
-'''
+    ws = sh.worksheet_by_title('測試')
+    USER_ID = ws.cell((3,1)).value
+    message = TextSendMessage(text="早安！這是一則自動推播訊息")
+    line_bot_api.push_message(USER_ID, message)
+ 
+# 設置排程任務：每天早上 9:00 推播訊息
+schedule.every().day.at("15:05").do(send_push_message)
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -143,10 +147,7 @@ def handle_message(event):
                 #直接結束
                 return
         '''
-        ws = sh.worksheet_by_title('測試')
-        USER_ID = ws.cell((1,1)).value
-        message = TextSendMessage(text="早安！這是一則自動推播訊息")
-        line_bot_api.push_message(USER_ID, message)
+        
         replyMessageList = []
         
         #if len(replyMessageList) == 0:
@@ -341,6 +342,17 @@ def handle_file(event):
         return
 
 
+# 定義一個函數來在背景執行 schedule.run_pending
+def run_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # 每分鐘檢查一次任務
+        
 if __name__ == "__main__":
+    # 創建並啟動一個線程來運行 run_schedule
+    schedule_thread = threading.Thread(target=run_schedule)
+    schedule_thread.daemon = True  # 設置為守護線程，這樣當主程式結束時該線程會自動終止
+    schedule_thread.start()
+    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
