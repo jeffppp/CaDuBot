@@ -40,13 +40,14 @@ def getResponse(content, line_bot_api, sh):
             mes = content.message.text
         learntxt = re.split('[,，]', mes)
 
-        if learntxt[0] == '自動發文':
+        if learntxt[0] == '自動發文' and (room_id=="U309aa4760e4ef8573c99603498ff2e7d" or room_id=="Uef044b9b8604272fe3880362423af848"):
             column_a_values = ws.get_col(1)  # A 欄為 1，傳回值為列表
             column_c_values = ws.get_col(3)  # C 欄為 3，傳回值為列表
             # 輸出結果
-            for value,strdata in zip(column_a_values, column_c_values):
-                message = TextSendMessage(text=strdata)
-                line_bot_api.push_message(value, message)        
+            for i in range(1,len(ws.get_col(1,include_tailing_empty=False))+1):
+                if(ws.cell((i,4)).value="T"):
+                    message = TextSendMessage(text=ws.cell((i,3)).value)
+                    line_bot_api.push_message(ws.cell((i,1)).value, message)        
         return []
     except LineBotApiError as e:
         error = '''LineBotApiError\n''' + e.__str__()
