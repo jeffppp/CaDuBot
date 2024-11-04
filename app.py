@@ -122,16 +122,22 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token,
                                    TextMessage(text="error1"))
         error = '''LineBotApiError\n''' + e.__str__()
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((5,5)).set_value(error)
+        ws = sh.worksheet_by_title('log')
+        ws.add_rows(1)
+        L=len(ws.get_col(1,include_tailing_empty=False))
+        ws.cell((L+1,1)).set_value()
+        ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return
     except:
         line_bot_api.reply_message(event.reply_token,
                                    TextMessage(text="error2"))
         error = '''UnknownError\n''' + traceback.format_exc()
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((6,6)).set_value(error)
+        ws = sh.worksheet_by_title('log')
+        ws.add_rows(1)
+        L=len(ws.get_col(1,include_tailing_empty=False))
+        ws.cell((L+1,1)).set_value()
+        ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return
 
@@ -293,17 +299,8 @@ def handle_file(event):
         return
 
 
-# 定義一個函數來在背景執行 schedule.run_pending
-def run_schedule():
-    while True:
-        schedule.run_pending()
-        time.sleep(60)  # 每分鐘檢查一次任務
-        print('60000000000000000')
+
 if __name__ == "__main__":
-    # 創建並啟動一個線程來運行 run_schedule
-    schedule_thread = threading.Thread(target=run_schedule)
-    schedule_thread.daemon = True  # 設置為守護線程，這樣當主程式結束時該線程會自動終止
-    schedule_thread.start()
     
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
