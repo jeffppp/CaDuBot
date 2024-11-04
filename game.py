@@ -5,6 +5,7 @@ from linebot.models import *
 #import database, googleSheet
 import re
 import pygsheets
+import time, datetime, pytz
 
 def getResponse(content, line_bot_api, sh):
 
@@ -25,14 +26,7 @@ def getResponse(content, line_bot_api, sh):
             profile = line_bot_api.get_group_member_profile(
                 content.source.group_id, content.source.user_id)
 
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((1,10)).set_value('=MATCH("'+room_id+'",A:A,0)')
-        ws.refresh()
-        if(ws.cell((1,10)).value=='#N/A'):
-            ws.add_rows(1)
-            L=len(ws.get_col(1,include_tailing_empty=False))
-            ws.cell((L+1,1)).set_value(room_id)
-            ws.cell((L+1,2)).set_value(profile.display_name)
+       
 
         
         if type(content) == str:
@@ -370,14 +364,22 @@ def getResponse(content, line_bot_api, sh):
         return []
     except LineBotApiError as e:
         error = '''LineBotApiError\n''' + e.__str__()
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((5,5)).set_value(error)
+        ws = sh.worksheet_by_title('log')
+        ws.add_rows(1)
+        L=len(ws.get_col(1,include_tailing_empty=False))
+        localtime = datetime.datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
+        ws.cell((L+1,1)).set_value(localtime)
+        ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return []
     except:
         error = '''UnknownError\n''' + traceback.format_exc()
-        ws = sh.worksheet_by_title('測試')
-        ws.cell((6,6)).set_value(error)
+        ws = sh.worksheet_by_title('log')
+        ws.add_rows(1)
+        L=len(ws.get_col(1,include_tailing_empty=False))
+        localtime = datetime.datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
+        ws.cell((L+1,1)).set_value(localtime)
+        ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return []
 

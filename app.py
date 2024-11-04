@@ -19,7 +19,7 @@ from datetime import datetime
 import sys
 import pygsheets
 import os
-
+import pytz
 
 app = Flask(__name__)
 
@@ -104,7 +104,29 @@ def handle_postback(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     try:
-        
+        usertype = event.source.type
+        if usertype is 'user':
+            room_id = event.source.user_id
+            profile = line_bot_api.get_profile(event.source.user_id)
+
+        elif usertype is 'room':
+            room_id = event.source.room_id
+            profile = line_bot_api.get_room_member_profile(
+                event.source.room_id, event.source.user_id)
+
+        else:
+            room_id = event.source.group_id
+            profile = line_bot_api.get_group_member_profile(
+                event.source.group_id, event.source.user_id)
+
+        ws = sh.worksheet_by_title('聊天室資料')
+        ws.cell((1,10)).set_value('=MATCH("'+room_id+'",A:A,0)')
+        ws.refresh()
+        if(ws.cell((1,10)).value=='#N/A'):
+            ws.add_rows(1)
+            L=len(ws.get_col(1,include_tailing_empty=False))
+            ws.cell((L+1,1)).set_value(room_id)
+            ws.cell((L+1,2)).set_value(profile.display_name)
         replyMessageList = []
         
         #if len(replyMessageList) == 0:
@@ -125,7 +147,8 @@ def handle_message(event):
         ws = sh.worksheet_by_title('log')
         ws.add_rows(1)
         L=len(ws.get_col(1,include_tailing_empty=False))
-        ws.cell((L+1,1)).set_value()
+        localtime = datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
+        ws.cell((L+1,1)).set_value(localtime)
         ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return
@@ -136,7 +159,8 @@ def handle_message(event):
         ws = sh.worksheet_by_title('log')
         ws.add_rows(1)
         L=len(ws.get_col(1,include_tailing_empty=False))
-        ws.cell((L+1,1)).set_value()
+        localtime = datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
+        ws.cell((L+1,1)).set_value(localtime)
         ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return

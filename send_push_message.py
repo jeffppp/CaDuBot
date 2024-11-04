@@ -30,7 +30,6 @@ def getResponse(content, line_bot_api, sh):
         if(ws.cell((1,10)).value=='#N/A'):
             ws.add_rows(1)
             L=len(ws.get_col(1,include_tailing_empty=False))
-            localtime = datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
             ws.cell((L+1,1)).set_value(room_id)
             ws.cell((L+1,2)).set_value(profile.display_name)
 
@@ -54,7 +53,8 @@ def getResponse(content, line_bot_api, sh):
         ws = sh.worksheet_by_title('log')
         ws.add_rows(1)
         L=len(ws.get_col(1,include_tailing_empty=False))
-        ws.cell((L+1,1)).set_value()
+        localtime = datetime.datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
+        ws.cell((L+1,1)).set_value(localtime)
         ws.cell((L+1,2)).set_value(error)
 
         #googleSheet.uploadException(error)
@@ -64,7 +64,8 @@ def getResponse(content, line_bot_api, sh):
         ws = sh.worksheet_by_title('log')
         ws.add_rows(1)
         L=len(ws.get_col(1,include_tailing_empty=False))
-        ws.cell((L+1,1)).set_value()
+        localtime = datetime.datetime.fromtimestamp(time.time()).astimezone(pytz.timezone('Asia/Taipei')).strftime('%Y-%m-%d %H:%M:%S')
+        ws.cell((L+1,1)).set_value(localtime)
         ws.cell((L+1,2)).set_value(error)
         #googleSheet.uploadException(error)
         return []
