@@ -45,7 +45,7 @@ def getResponse(content, line_bot_api, sh):
             column_c_values = ws.get_col(3)  # C 欄為 3，傳回值為列表
             # 輸出結果
             for i in range(1,len(ws.get_col(1,include_tailing_empty=False))+1):
-                if(ws.cell((i,4)).value="T"):
+                if(ws.cell((i,4)).value=="T"):
                     message = TextSendMessage(text=ws.cell((i,3)).value)
                     line_bot_api.push_message(ws.cell((i,1)).value, message)        
         return []
