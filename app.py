@@ -130,10 +130,10 @@ def handle_message(event):
             message = TextSendMessage(text="已記錄視窗ID")
             line_bot_api.push_message(room_id, message)
         else:
-            members = [ws.cell((ws.cell((1,10)).value,2)).value]
+            members = [ws.cell((int(ws.cell((1,10)).value),2)).value]
             members.append(profile.display_name)
             members = list(set(members))
-            ws.cell((ws.cell((1,10)).value,2)).set_value(members)
+            ws.cell((int(ws.cell((1,10)).value),2)).set_value(members)
             
         replyMessageList = []
         
