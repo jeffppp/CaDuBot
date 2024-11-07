@@ -131,11 +131,12 @@ def handle_message(event):
             line_bot_api.push_message(room_id, message)
         else:
             members = [ws.cell((int(ws.cell((1,10)).value),2)).value]
-            ws.cell((10,1)).set_value(members)
+            ws.cell((10,1)).set_value(ws.cell((1,10)).value)
+            ws.cell((10,2)).set_value(int(ws.cell((1,10)).value))
+            ws.cell((10,3)).set_value([ws.cell((3,2)).value])
+            
             members.append(profile.display_name)
-            ws.cell((10,2)).set_value(members)
             members = list(set(members))
-            ws.cell((10,3)).set_value(members)
             ws.cell((int(ws.cell((1,10)).value),2)).set_value(members)
             
         replyMessageList = []
