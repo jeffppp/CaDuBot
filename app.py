@@ -131,7 +131,7 @@ def handle_message(event):
             line_bot_api.push_message(room_id, message)
         else:
             members = ws.cell((int(ws.cell((1,10)).value),2)).value.split(", ")
-            if(!profile.display_name in members):
+            if(profile.display_name not in members):
                 members.append(profile.display_name)
                 members = list(set(members))
                 members_string = ", ".join(members)
