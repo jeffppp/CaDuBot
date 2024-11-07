@@ -47,7 +47,14 @@ def getResponse(content, line_bot_api, sh):
             for i in range(1,len(ws.get_col(1,include_tailing_empty=False))+1):
                 if(ws.cell((i,4)).value=="T"):
                     message = TextSendMessage(text=ws.cell((i,3)).value)
-                    line_bot_api.push_message(ws.cell((i,1)).value, message)        
+                    line_bot_api.push_message(ws.cell((i,1)).value, message)
+                    location_message = LocationSendMessage(
+                        title=ws.cell((1,5)).value,
+                        address=ws.cell((1,6)).value,
+                        latitude=ws.cell((1,7)).value,
+                        longitude=ws.cell((1,8)).value
+                        )
+                    line_bot_api.push_message(ws.cell((i,1)).value, location_message)
         return []
     except LineBotApiError as e:
         error = '''LineBotApiError\n''' + e.__str__()
