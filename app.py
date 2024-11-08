@@ -118,7 +118,7 @@ def handle_message(event):
             room_id = event.source.group_id
             profile = line_bot_api.get_group_member_profile(
                 event.source.group_id, event.source.user_id)
-
+        print(usertype)
         ws = sh.worksheet_by_title('聊天室資料')
         ws.cell((1,10)).set_value('=MATCH("'+room_id+'",A:A,0)')
         ws.refresh()
